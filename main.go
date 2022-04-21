@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 
+	"pingpong2/database"
 	"pingpong2/ent"
 	"pingpong2/ent/sentense"
 	"pingpong2/util"
@@ -111,63 +112,13 @@ func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params 
 	t.Execute(w, sentence)
 }
 
-
-func createGraph() {
-// create a new user
-	var u ent.User
-	u.Name = "testUser"
-	u.Password = "123"
-
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
-	if err != nil {
-		log.Fatalf("failed opening connection to sqlite: %v", err)
-	}
-	defer client.Close()
-	ctx := context.Background()
-	userA, _ := client.User.Create().SetName(u.Name).SetPassword(u.Password).Save(ctx)
-
-// create a new sentence
-	var s ent.Sentense
-	s.Chinese = "今天天气真好"
-	s.Pinyin = "jin tian tian qi zhen hao"
-	s.English = "Today's weather is so good"
-	sentenceA, _ := client.Sentense.Create().SetChinese(s.Chinese).SetPinyin(s.Pinyin).SetEnglish(s.English).Save(ctx)
-
-// create a read assignment
-	readA, err := client.Read.Create().SetUser(userA).SetSentence(sentenceA).SetResult(0).Save(ctx)
-	if err != nil {
-		fmt.Println("error while createing the read.", err)
-	}
-	fmt.Println("readA is, ", readA)
-}
-
-//func queryGraph() {
-//	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
-//	if err != nil {
-//		log.Fatalf("failed opening connection to sqlite: %v", err)
-//	}
-//	defer client.Close()
-//	ctx := context.Background()
-//}
-
 func main() {
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
-	if err != nil {
-		log.Fatalf("failed opening connection to sqlite: %v", err)
-	}
-	defer client.Close()
-	ctx := context.Background()
-	// Run the automatic migration tool to create all schema resources.
-	if err := client.Schema.Create(ctx); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
-	}
-
-	//queryUserYunhai()
-	//createGraph()
+	database.MigrateTablesWithDrop()
+	database.CreateTestGraph()
+	database.AddTenSentences()
 
 	router := httprouter.New()
 	router.NotFound = http.FileServer(http.Dir("static"))
-
 	router.GET("/", index)
 	// private/internal
 	router.POST("/addSentence", addSentence)

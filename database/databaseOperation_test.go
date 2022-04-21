@@ -27,21 +27,6 @@ func queryUserByName(username string) (*ent.User, error){
 	return user, nil
 }
 
-func deleteUserByName(username string) error{
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
-	if err != nil {
-		log.Fatalf("failed opening connection to postgres: %v", err)
-	}
-	defer client.Close()
-	ctx := context.Background()
-
-	user, err := client.User.Query().Where(user.Name(username)).Only(ctx)
-	if err != nil {
-		return err
-	}
-	client.User.DeleteOne(user).Exec(ctx)
-	return nil
-}
 
 func TestAddUser(t *testing.T){
 	err := AddUser("mariTestUser", "mari")
@@ -54,6 +39,6 @@ func TestAddUser(t *testing.T){
 	assert.NoError(t, err)
 	assert.Equal(t, "mari", userMari.Password)
 	assert.Equal(t, "yunhao", userYunhao.Password)
-	deleteUserByName("mariTestUser")
-	deleteUserByName("yunhaoTestUser")
+	DeleteUserByName("mariTestUser")
+	DeleteUserByName("yunhaoTestUser")
 }
