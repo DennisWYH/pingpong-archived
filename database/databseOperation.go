@@ -10,7 +10,7 @@ import (
 )
 
 func AddUser(username string, password string) error {
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func AddUser(username string, password string) error {
 }
 
 func DeleteUserByName(username string) error{
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}

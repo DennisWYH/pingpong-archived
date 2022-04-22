@@ -45,7 +45,7 @@ func addSentence(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	pinyins := Tokens_to_pinyins(tokens)
 	pinyin := strings.Join(pinyins, "")
 
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to sqlite: %v", err)
 	}
@@ -55,7 +55,7 @@ func addSentence(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func displaySentence(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
@@ -76,7 +76,7 @@ func addOne(value string) int {
 
 func displaySentenceCardViewByID(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	requestID, err := strconv.ParseInt(params.ByName("id"),10,64)
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
@@ -95,7 +95,7 @@ func displaySentenceCardViewByID(w http.ResponseWriter, r *http.Request, params 
 
 func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	currentID, err := strconv.ParseInt(params.ByName("id"),10,64)
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
@@ -105,8 +105,7 @@ func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params 
 	nextID := int(currentID) + 1
 	sentence, err := client.Sentense.Query().Where(sentense.ID(nextID)).Only(ctx)
 	if err != nil {
-		log.Fatalf("failed while querying the database: %v", err)
-		sentence, _ = client.Sentense.Query().Where(sentense.ID(1)).Only(ctx)
+		sentence, _ = client.Sentense.Query().First(ctx)
 	}
 	t, _ := template.ParseFiles("static/display-sentence-card-view.html")
 	t.Execute(w, sentence)

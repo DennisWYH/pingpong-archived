@@ -9,7 +9,7 @@ import (
 )
 
 func MigrateTablesWithDrop() {
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=yunhaiwang sslmode=disable")
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to sqlite: %v", err)
 	}
