@@ -13,7 +13,6 @@ import (
 	"strconv"
 	"strings"
 
-	"pingpong2/database"
 	"pingpong2/ent"
 	"pingpong2/ent/sentense"
 	"pingpong2/util"
@@ -22,6 +21,7 @@ import (
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Println("welcome to index page.")
 }
+
 func Tokens_to_pinyins(tokens []string) []string {
 	var pinyins []string
 	for _, val := range tokens {
@@ -105,16 +105,16 @@ func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params 
 	nextID := int(currentID) + 1
 	sentence, err := client.Sentense.Query().Where(sentense.ID(nextID)).Only(ctx)
 	if err != nil {
-		sentence, _ = client.Sentense.Query().First(ctx)
+		sentence, _ = client.Sentense.Query().Where(sentense.ID(1)).Only(ctx)
 	}
 	t, _ := template.ParseFiles("static/display-sentence-card-view.html")
 	t.Execute(w, sentence)
 }
 
 func main() {
-	database.MigrateTablesWithDrop()
-	database.CreateTestGraph()
-	database.AddTenSentences()
+	//database.MigrateTablesWithDrop()
+	//database.CreateTestGraph()
+	//database.AddTenSentences()
 
 	router := httprouter.New()
 	router.NotFound = http.FileServer(http.Dir("static"))

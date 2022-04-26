@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"pingpong2/ent"
@@ -20,4 +21,7 @@ func MigrateTablesWithDrop() {
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),
 	)
+	if err != nil {
+		fmt.Println("err in migrate.WithDropIndex, ", err)
+	}
 }
