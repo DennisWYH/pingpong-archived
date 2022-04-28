@@ -74,8 +74,13 @@ func addOne(value string) int {
 	return 1
 }
 
+func addResult(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	requestResult := params.ByName("result")
+	fmt.Println("requestResult is", requestResult)
+}
+
 func displaySentenceCardViewByID(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	requestID, err := strconv.ParseInt(params.ByName("id"),10,64)
+	requestID, err := strconv.ParseInt(params.ByName("id"), 10, 64)
 	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
@@ -94,7 +99,7 @@ func displaySentenceCardViewByID(w http.ResponseWriter, r *http.Request, params 
 }
 
 func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	currentID, err := strconv.ParseInt(params.ByName("id"),10,64)
+	currentID, err := strconv.ParseInt(params.ByName("id"), 10, 64)
 	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
@@ -119,8 +124,11 @@ func main() {
 	router := httprouter.New()
 	router.NotFound = http.FileServer(http.Dir("static"))
 	router.GET("/", index)
+
 	// private/internal
 	router.POST("/addSentence", addSentence)
+	router.POST("/addResult/:result", addResult)
+
 	// public/external
 	router.GET("/displaySentence", displaySentence)
 	router.GET("/displaySentenceCardView/:id/", displaySentenceCardViewByID)
