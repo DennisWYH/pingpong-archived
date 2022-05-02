@@ -114,6 +114,7 @@ func addResult(w http.ResponseWriter, r *http.Request, params httprouter.Params)
 	if CheckIfReadExist(re) {
 		fmt.Println("The read record already exist.")
 	} else {
+		fmt.Println("The requested read record is, ", re)
 		client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
 		if err != nil {
 			log.Fatalf("failed opening connection to sqlite: %v", err)

@@ -6,17 +6,18 @@ window.addEventListener('load', (event) => {
 });
 
 function addResultRequest() {
-    radioButtonGroup = document.getElementsByName("btnradio");
+    let sentenceID = document.getElementById("sentence-id").innerHTML;
+    let radioButtonGroup = document.getElementsByName("btnradio");
     for (let i = 0; i < radioButtonGroup.length; i++) {
         if (radioButtonGroup[i].checked == true) {
             var selectedRadioButton = radioButtonGroup[i];
             result = selectedRadioButton.value
-            makeRequest(result);
+            makeRequest(sentenceID, result);
         };
     }
 }
 
-function makeRequest(result){
+function makeRequest(sentenceID, result){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -37,7 +38,7 @@ function makeRequest(result){
     const json = {
         "user": 1,
         "result": result,
-        "sentence": 1,
+        "sentence": sentenceID,
     };
     xhttp.send(JSON.stringify(json));
 }
