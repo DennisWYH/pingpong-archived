@@ -110,6 +110,7 @@ func addResult(w http.ResponseWriter, r *http.Request, params httprouter.Params)
 	}
 	var re ResultRequest
 	json.NewDecoder(r.Body).Decode(&re)
+	fmt.Println("The sentence id in the request body is,", re.Sentence)
 
 	if CheckIfReadExist(re) {
 		fmt.Println("The read record already exist.")

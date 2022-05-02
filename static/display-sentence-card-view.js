@@ -7,6 +7,7 @@ window.addEventListener('load', (event) => {
 
 function addResultRequest() {
     let sentenceID = document.getElementById("sentence-id").innerHTML;
+    console.log("sentence id of the read record is,", sentenceID);
     let radioButtonGroup = document.getElementsByName("btnradio");
     for (let i = 0; i < radioButtonGroup.length; i++) {
         if (radioButtonGroup[i].checked == true) {
@@ -35,10 +36,11 @@ function makeRequest(sentenceID, result){
     if (result==='hard'){
         result=2;
     }
+    console.log("sentence id before json is,", sentenceID);
     const json = {
         "user": 1,
+        "sentence": parseInt(sentenceID),
         "result": result,
-        "sentence": sentenceID,
     };
     xhttp.send(JSON.stringify(json));
 }
