@@ -15,6 +15,7 @@ import (
 
 	"pingpong2/ent"
 	"pingpong2/ent/sentense"
+	"pingpong2/ent/user"
 	"pingpong2/util"
 )
 
@@ -70,13 +71,58 @@ func displaySentence(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	t.Execute(w, sentences)
 }
 
-func addOne(value string) int {
-	return 1
+type ResultRequest struct {
+	User     int `json:"user"`
+	Sentence int `json:"sentence"`
+	Result   int `json:"result"`
+}
+
+func CheckIfReadExist(re ResultRequest) bool {
+	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
+	if err != nil {
+		log.Fatalf("failed opening connection to sqlite: %v", err)
+	}
+	defer client.Close()
+	ctx := context.Background()
+	// find the user
+	user, err := client.User.Query().Where(user.ID(re.User)).Only(ctx)
+	if err != nil {
+		log.Fatalf("failed opening connection to sqlite: %v", err)
+	}
+	// find all the sentences the user has read
+	sentences, err := user.QueryReads().QuerySentence().All(ctx)
+	if err != nil {
+		log.Fatalf("failed opening connection to sqlite: %v", err)
+	}
+	// among all the sentences the user read, find the sentence with the right ID
+	for i := 0; i < len(sentences); i++ {
+		if sentences[i].ID == re.Sentence {
+			fmt.Println("user id 1, sentense id 1 already has their entry.")
+			return true
+		}
+	}
+	return false
 }
 
 func addResult(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	requestResult := params.ByName("result")
-	fmt.Println("requestResult is", requestResult)
+	if r.Body == nil {
+		fmt.Println("the request body is nil")
+	}
+	var re ResultRequest
+	json.NewDecoder(r.Body).Decode(&re)
+
+	if CheckIfReadExist(re) {
+		fmt.Println("The read record already exist.")
+	} else {
+		client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=testdb sslmode=disable")
+		if err != nil {
+			log.Fatalf("failed opening connection to sqlite: %v", err)
+		}
+		defer client.Close()
+		ctx := context.Background()
+		client.Read.Create().SetResult(re.Result).SetSentenceID(re.Sentence).SetUserID(re.User).Save(ctx)
+		fmt.Println("Added a new read record.")
+	}
 }
 
 func displaySentenceCardViewByID(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -93,8 +139,7 @@ func displaySentenceCardViewByID(w http.ResponseWriter, r *http.Request, params 
 		log.Fatalf("failed while querying the database: %v", err)
 	}
 
-	funcs := template.FuncMap{"addOne": addOne}
-	t, _ := template.New("display-sentence-card-view.html").Funcs(funcs).ParseFiles("static/display-sentence-card-view.html")
+	t, _ := template.New("display-sentence-card-view.html").ParseFiles("static/display-sentence-card-view.html")
 	t.Execute(w, sentence)
 }
 
@@ -127,7 +172,7 @@ func main() {
 
 	// private/internal
 	router.POST("/addSentence", addSentence)
-	router.POST("/addResult/:result", addResult)
+	router.POST("/addResult", addResult)
 
 	// public/external
 	router.GET("/displaySentence", displaySentence)

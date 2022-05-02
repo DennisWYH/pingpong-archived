@@ -423,10 +423,10 @@ func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Read)
 		for i := range nodes {
-			if nodes[i].user_reads == nil {
+			if nodes[i].user_id == nil {
 				continue
 			}
-			fk := *nodes[i].user_reads
+			fk := *nodes[i].user_id
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -440,7 +440,7 @@ func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_reads" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.User = n
@@ -452,10 +452,10 @@ func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Read)
 		for i := range nodes {
-			if nodes[i].sentense_reads == nil {
+			if nodes[i].sentence_id == nil {
 				continue
 			}
-			fk := *nodes[i].sentense_reads
+			fk := *nodes[i].sentence_id
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -469,7 +469,7 @@ func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "sentense_reads" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "sentence_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Sentence = n

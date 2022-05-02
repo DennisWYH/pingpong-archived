@@ -21,14 +21,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "user" package.
 	UserInverseTable = "users"
 	// UserColumn is the table column denoting the user relation/edge.
-	UserColumn = "user_reads"
+	UserColumn = "user_id"
 	// SentenceTable is the table that holds the sentence relation/edge.
 	SentenceTable = "reads"
 	// SentenceInverseTable is the table name for the Sentense entity.
 	// It exists in this package in order to avoid circular dependency with the "sentense" package.
 	SentenceInverseTable = "sentenses"
 	// SentenceColumn is the table column denoting the sentence relation/edge.
-	SentenceColumn = "sentense_reads"
+	SentenceColumn = "sentence_id"
 )
 
 // Columns holds all SQL columns for read fields.
@@ -40,8 +40,8 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "reads"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"sentense_reads",
-	"user_reads",
+	"sentence_id",
+	"user_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

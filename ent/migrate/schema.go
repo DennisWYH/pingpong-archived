@@ -12,8 +12,8 @@ var (
 	ReadsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "result", Type: field.TypeInt},
-		{Name: "sentense_reads", Type: field.TypeInt},
-		{Name: "user_reads", Type: field.TypeInt},
+		{Name: "sentence_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// ReadsTable holds the schema information for the "reads" table.
 	ReadsTable = &schema.Table{

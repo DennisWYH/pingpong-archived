@@ -21,9 +21,9 @@ type Read struct {
 	Result int `json:"result,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ReadQuery when eager-loading is set.
-	Edges          ReadEdges `json:"edges"`
-	sentense_reads *int
-	user_reads     *int
+	Edges       ReadEdges `json:"edges"`
+	sentence_id *int
+	user_id     *int
 }
 
 // ReadEdges holds the relations/edges for other nodes in the graph.
@@ -72,9 +72,9 @@ func (*Read) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case read.FieldID, read.FieldResult:
 			values[i] = new(sql.NullInt64)
-		case read.ForeignKeys[0]: // sentense_reads
+		case read.ForeignKeys[0]: // sentence_id
 			values[i] = new(sql.NullInt64)
-		case read.ForeignKeys[1]: // user_reads
+		case read.ForeignKeys[1]: // user_id
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Read", columns[i])
@@ -105,17 +105,17 @@ func (r *Read) assignValues(columns []string, values []interface{}) error {
 			}
 		case read.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field sentense_reads", value)
+				return fmt.Errorf("unexpected type %T for edge-field sentence_id", value)
 			} else if value.Valid {
-				r.sentense_reads = new(int)
-				*r.sentense_reads = int(value.Int64)
+				r.sentence_id = new(int)
+				*r.sentence_id = int(value.Int64)
 			}
 		case read.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_reads", value)
+				return fmt.Errorf("unexpected type %T for edge-field user_id", value)
 			} else if value.Valid {
-				r.user_reads = new(int)
-				*r.user_reads = int(value.Int64)
+				r.user_id = new(int)
+				*r.user_id = int(value.Int64)
 			}
 		}
 	}

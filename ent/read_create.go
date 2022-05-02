@@ -180,7 +180,7 @@ func (rc *ReadCreate) createSpec() (*Read, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_reads = &nodes[0]
+		_node.user_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := rc.mutation.SentenceIDs(); len(nodes) > 0 {
@@ -200,7 +200,7 @@ func (rc *ReadCreate) createSpec() (*Read, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.sentense_reads = &nodes[0]
+		_node.sentence_id = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

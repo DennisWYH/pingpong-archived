@@ -392,13 +392,13 @@ func (sq *SentenseQuery) sqlAll(ctx context.Context) ([]*Sentense, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.sentense_reads
+			fk := n.sentence_id
 			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "sentense_reads" is nil for node %v`, n.ID)
+				return nil, fmt.Errorf(`foreign-key "sentence_id" is nil for node %v`, n.ID)
 			}
 			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "sentense_reads" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "sentence_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Reads = append(node.Edges.Reads, n)
 		}

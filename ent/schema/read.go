@@ -13,8 +13,9 @@ type Read struct {
 
 // Fields of the Read.
 // result field being
-// 0 : done;
-// 1 : flash;
+// 0 : flash;
+// 1 : done;
+// 2 : hard
 func (Read) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("result"),

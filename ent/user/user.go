@@ -21,7 +21,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "read" package.
 	ReadsInverseTable = "reads"
 	// ReadsColumn is the table column denoting the reads relation/edge.
-	ReadsColumn = "user_reads"
+	ReadsColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.

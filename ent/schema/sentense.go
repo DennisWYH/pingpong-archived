@@ -26,7 +26,7 @@ func (Sentense) Fields() []ent.Field {
 // Edges of the Sentense.
 func (Sentense) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("reads", Read.Type),
+		edge.To("reads", Read.Type).StorageKey(edge.Column("sentence_id")),
 	}
 
 }
