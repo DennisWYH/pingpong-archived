@@ -57,14 +57,27 @@
         </div>
     </div>
     <br>
+<!--    <div class="bootstrap-pagination">-->
+<!--        <nav aria-label="Page navigation example">-->
+<!--            <ul class="pagination" >-->
+<!--                <li class="page-item"><a class="page-link" href="#">Previous</a></li>-->
+<!--                <li class="page-item"><a class="page-link" href="/displaySentenceCardView/{{.ID}}/next/" id="next-button">Next</a></li>-->
+<!--            </ul>-->
+<!--        </nav>-->
+<!--    </div>-->
     <div class="bootstrap-pagination">
         <nav aria-label="Page navigation example">
             <ul class="pagination" >
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="/displaySentenceCardView/{{.ID}}/next/" id="next-button">Next</a></li>
+<!--                <li class="page-item"><a class="page-link" href="/displaySentenceCardView/{{.ID}}/next/" id="next-button">Next</a></li>-->
             </ul>
         </nav>
     </div>
+
+<div class="pagination-buttons">
+    <li class="page-item" id="previous-button" style="display: inline-block"><a class="page-link" href="#">Previous</a></li>
+    <li class="page-item"  id="next-button" style="display: inline-block;"><a class="page-link" href="/displaySentenceCardView/{{.ID}}/next/">Next</a></li>
+</div>
+</div>
 </div>
 
 

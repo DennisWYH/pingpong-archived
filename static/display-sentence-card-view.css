@@ -9,11 +9,14 @@
     margin-left:20%;
 }
 
-.bootstrap-pagination {
+#pagination-buttons{
     margin-left:20%;
     width:60%;
 }
+#previous-button{
+    margin-left: 20%;
+    padding-right:48%;
+}
+#next-button{
 
-/*#next-button{*/
-/*    margin-left:715px;*/
-/*}*/
+}
