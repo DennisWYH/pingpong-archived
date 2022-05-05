@@ -163,6 +163,22 @@ func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params 
 	t.Execute(w, sentence)
 }
 
+func BasicAuth(h httprouter.Handle) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		// Get the Basic Authentication credentials
+		user, password, hasAuth := r.BasicAuth()
+
+		if hasAuth && user == "simon" && password == "123" {
+			// Delegate request to the given handle
+			h(w, r, ps)
+		} else {
+			// Request Basic Authentication otherwise
+			w.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		}
+	}
+}
+
 func main() {
 	//database.MigrateTablesWithDrop()
 	//database.CreateTestGraph()
@@ -170,7 +186,7 @@ func main() {
 
 	router := httprouter.New()
 	router.NotFound = http.FileServer(http.Dir("static"))
-	router.GET("/", index)
+	router.GET("/", BasicAuth(index))
 
 	// private/internal
 	router.POST("/addSentence", addSentence)
