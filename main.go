@@ -163,14 +163,16 @@ func displaySentenceCardViewNext(w http.ResponseWriter, r *http.Request, params 
 	t.Execute(w, sentence)
 }
 
-func BasicAuth(h httprouter.Handle) httprouter.Handle {
+func BasicAuth(handler httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		// Get the Basic Authentication credentials
 		user, password, hasAuth := r.BasicAuth()
 
 		if hasAuth && user == "simon" && password == "123" {
 			// Delegate request to the given handle
-			h(w, r, ps)
+			handler(w, r, ps)
+		} else if hasAuth && user == "yunhai" && password == "123" {
+			handler(w, r, ps)
 		} else {
 			// Request Basic Authentication otherwise
 			w.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
@@ -194,7 +196,7 @@ func main() {
 
 	// public/external
 	router.GET("/displaySentence", displaySentence)
-	router.GET("/displaySentenceCardView/:id/", displaySentenceCardViewByID)
-	router.GET("/displaySentenceCardView/:id/next/", displaySentenceCardViewNext)
+	router.GET("/displaySentenceCardView/:id/", BasicAuth(displaySentenceCardViewByID))
+	router.GET("/displaySentenceCardView/:id/next/", BasicAuth(displaySentenceCardViewNext))
 	http.ListenAndServe(":8080", router)
 }

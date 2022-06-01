@@ -29,6 +29,18 @@ func (ru *ReadUpdate) Where(ps ...predicate.Read) *ReadUpdate {
 	return ru
 }
 
+// SetUserID sets the "user_id" field.
+func (ru *ReadUpdate) SetUserID(i int) *ReadUpdate {
+	ru.mutation.SetUserID(i)
+	return ru
+}
+
+// SetSentenceID sets the "sentence_id" field.
+func (ru *ReadUpdate) SetSentenceID(i int) *ReadUpdate {
+	ru.mutation.SetSentenceID(i)
+	return ru
+}
+
 // SetResult sets the "result" field.
 func (ru *ReadUpdate) SetResult(i int) *ReadUpdate {
 	ru.mutation.ResetResult()
@@ -42,21 +54,9 @@ func (ru *ReadUpdate) AddResult(i int) *ReadUpdate {
 	return ru
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (ru *ReadUpdate) SetUserID(id int) *ReadUpdate {
-	ru.mutation.SetUserID(id)
-	return ru
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (ru *ReadUpdate) SetUser(u *User) *ReadUpdate {
 	return ru.SetUserID(u.ID)
-}
-
-// SetSentenceID sets the "sentence" edge to the Sentense entity by ID.
-func (ru *ReadUpdate) SetSentenceID(id int) *ReadUpdate {
-	ru.mutation.SetSentenceID(id)
-	return ru
 }
 
 // SetSentence sets the "sentence" edge to the Sentense entity.
@@ -273,6 +273,18 @@ type ReadUpdateOne struct {
 	mutation *ReadMutation
 }
 
+// SetUserID sets the "user_id" field.
+func (ruo *ReadUpdateOne) SetUserID(i int) *ReadUpdateOne {
+	ruo.mutation.SetUserID(i)
+	return ruo
+}
+
+// SetSentenceID sets the "sentence_id" field.
+func (ruo *ReadUpdateOne) SetSentenceID(i int) *ReadUpdateOne {
+	ruo.mutation.SetSentenceID(i)
+	return ruo
+}
+
 // SetResult sets the "result" field.
 func (ruo *ReadUpdateOne) SetResult(i int) *ReadUpdateOne {
 	ruo.mutation.ResetResult()
@@ -286,21 +298,9 @@ func (ruo *ReadUpdateOne) AddResult(i int) *ReadUpdateOne {
 	return ruo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (ruo *ReadUpdateOne) SetUserID(id int) *ReadUpdateOne {
-	ruo.mutation.SetUserID(id)
-	return ruo
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (ruo *ReadUpdateOne) SetUser(u *User) *ReadUpdateOne {
 	return ruo.SetUserID(u.ID)
-}
-
-// SetSentenceID sets the "sentence" edge to the Sentense entity by ID.
-func (ruo *ReadUpdateOne) SetSentenceID(id int) *ReadUpdateOne {
-	ruo.mutation.SetSentenceID(id)
-	return ruo
 }
 
 // SetSentence sets the "sentence" edge to the Sentense entity.

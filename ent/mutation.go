@@ -145,6 +145,78 @@ func (m *ReadMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
+// SetUserID sets the "user_id" field.
+func (m *ReadMutation) SetUserID(i int) {
+	m.user = &i
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *ReadMutation) UserID() (r int, exists bool) {
+	v := m.user
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Read entity.
+// If the Read object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ReadMutation) OldUserID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *ReadMutation) ResetUserID() {
+	m.user = nil
+}
+
+// SetSentenceID sets the "sentence_id" field.
+func (m *ReadMutation) SetSentenceID(i int) {
+	m.sentence = &i
+}
+
+// SentenceID returns the value of the "sentence_id" field in the mutation.
+func (m *ReadMutation) SentenceID() (r int, exists bool) {
+	v := m.sentence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentenceID returns the old "sentence_id" field's value of the Read entity.
+// If the Read object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ReadMutation) OldSentenceID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentenceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentenceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentenceID: %w", err)
+	}
+	return oldValue.SentenceID, nil
+}
+
+// ResetSentenceID resets all changes to the "sentence_id" field.
+func (m *ReadMutation) ResetSentenceID() {
+	m.sentence = nil
+}
+
 // SetResult sets the "result" field.
 func (m *ReadMutation) SetResult(i int) {
 	m.result = &i
@@ -201,11 +273,6 @@ func (m *ReadMutation) ResetResult() {
 	m.addresult = nil
 }
 
-// SetUserID sets the "user" edge to the User entity by id.
-func (m *ReadMutation) SetUserID(id int) {
-	m.user = &id
-}
-
 // ClearUser clears the "user" edge to the User entity.
 func (m *ReadMutation) ClearUser() {
 	m.cleareduser = true
@@ -214,14 +281,6 @@ func (m *ReadMutation) ClearUser() {
 // UserCleared reports if the "user" edge to the User entity was cleared.
 func (m *ReadMutation) UserCleared() bool {
 	return m.cleareduser
-}
-
-// UserID returns the "user" edge ID in the mutation.
-func (m *ReadMutation) UserID() (id int, exists bool) {
-	if m.user != nil {
-		return *m.user, true
-	}
-	return
 }
 
 // UserIDs returns the "user" edge IDs in the mutation.
@@ -240,11 +299,6 @@ func (m *ReadMutation) ResetUser() {
 	m.cleareduser = false
 }
 
-// SetSentenceID sets the "sentence" edge to the Sentense entity by id.
-func (m *ReadMutation) SetSentenceID(id int) {
-	m.sentence = &id
-}
-
 // ClearSentence clears the "sentence" edge to the Sentense entity.
 func (m *ReadMutation) ClearSentence() {
 	m.clearedsentence = true
@@ -253,14 +307,6 @@ func (m *ReadMutation) ClearSentence() {
 // SentenceCleared reports if the "sentence" edge to the Sentense entity was cleared.
 func (m *ReadMutation) SentenceCleared() bool {
 	return m.clearedsentence
-}
-
-// SentenceID returns the "sentence" edge ID in the mutation.
-func (m *ReadMutation) SentenceID() (id int, exists bool) {
-	if m.sentence != nil {
-		return *m.sentence, true
-	}
-	return
 }
 
 // SentenceIDs returns the "sentence" edge IDs in the mutation.
@@ -298,7 +344,13 @@ func (m *ReadMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ReadMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 3)
+	if m.user != nil {
+		fields = append(fields, read.FieldUserID)
+	}
+	if m.sentence != nil {
+		fields = append(fields, read.FieldSentenceID)
+	}
 	if m.result != nil {
 		fields = append(fields, read.FieldResult)
 	}
@@ -310,6 +362,10 @@ func (m *ReadMutation) Fields() []string {
 // schema.
 func (m *ReadMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case read.FieldUserID:
+		return m.UserID()
+	case read.FieldSentenceID:
+		return m.SentenceID()
 	case read.FieldResult:
 		return m.Result()
 	}
@@ -321,6 +377,10 @@ func (m *ReadMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ReadMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case read.FieldUserID:
+		return m.OldUserID(ctx)
+	case read.FieldSentenceID:
+		return m.OldSentenceID(ctx)
 	case read.FieldResult:
 		return m.OldResult(ctx)
 	}
@@ -332,6 +392,20 @@ func (m *ReadMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *ReadMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case read.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case read.FieldSentenceID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentenceID(v)
+		return nil
 	case read.FieldResult:
 		v, ok := value.(int)
 		if !ok {
@@ -403,6 +477,12 @@ func (m *ReadMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ReadMutation) ResetField(name string) error {
 	switch name {
+	case read.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case read.FieldSentenceID:
+		m.ResetSentenceID()
+		return nil
 	case read.FieldResult:
 		m.ResetResult()
 		return nil

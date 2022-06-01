@@ -92,10 +92,120 @@ func IDLTE(id int) predicate.Read {
 	})
 }
 
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int) predicate.Read {
+	return predicate.Read(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
+// SentenceID applies equality check predicate on the "sentence_id" field. It's identical to SentenceIDEQ.
+func SentenceID(v int) predicate.Read {
+	return predicate.Read(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSentenceID), v))
+	})
+}
+
 // Result applies equality check predicate on the "result" field. It's identical to ResultEQ.
 func Result(v int) predicate.Read {
 	return predicate.Read(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldResult), v))
+	})
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.Read {
+	return predicate.Read(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.Read {
+	return predicate.Read(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.Read {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Read(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldUserID), v...))
+	})
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.Read {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Read(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldUserID), v...))
+	})
+}
+
+// SentenceIDEQ applies the EQ predicate on the "sentence_id" field.
+func SentenceIDEQ(v int) predicate.Read {
+	return predicate.Read(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSentenceID), v))
+	})
+}
+
+// SentenceIDNEQ applies the NEQ predicate on the "sentence_id" field.
+func SentenceIDNEQ(v int) predicate.Read {
+	return predicate.Read(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSentenceID), v))
+	})
+}
+
+// SentenceIDIn applies the In predicate on the "sentence_id" field.
+func SentenceIDIn(vs ...int) predicate.Read {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Read(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSentenceID), v...))
+	})
+}
+
+// SentenceIDNotIn applies the NotIn predicate on the "sentence_id" field.
+func SentenceIDNotIn(vs ...int) predicate.Read {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Read(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSentenceID), v...))
 	})
 }
 

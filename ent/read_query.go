@@ -29,7 +29,6 @@ type ReadQuery struct {
 	// eager-loading edges.
 	withUser     *UserQuery
 	withSentence *SentenseQuery
-	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -328,12 +327,12 @@ func (rq *ReadQuery) WithSentence(opts ...func(*SentenseQuery)) *ReadQuery {
 // Example:
 //
 //	var v []struct {
-//		Result int `json:"result,omitempty"`
+//		UserID int `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Read.Query().
-//		GroupBy(read.FieldResult).
+//		GroupBy(read.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -355,11 +354,11 @@ func (rq *ReadQuery) GroupBy(field string, fields ...string) *ReadGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Result int `json:"result,omitempty"`
+//		UserID int `json:"user_id,omitempty"`
 //	}
 //
 //	client.Read.Query().
-//		Select(read.FieldResult).
+//		Select(read.FieldUserID).
 //		Scan(ctx, &v)
 //
 func (rq *ReadQuery) Select(fields ...string) *ReadSelect {
@@ -386,19 +385,12 @@ func (rq *ReadQuery) prepareQuery(ctx context.Context) error {
 func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 	var (
 		nodes       = []*Read{}
-		withFKs     = rq.withFKs
 		_spec       = rq.querySpec()
 		loadedTypes = [2]bool{
 			rq.withUser != nil,
 			rq.withSentence != nil,
 		}
 	)
-	if rq.withUser != nil || rq.withSentence != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, read.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Read{config: rq.config}
 		nodes = append(nodes, node)
@@ -423,10 +415,7 @@ func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Read)
 		for i := range nodes {
-			if nodes[i].user_id == nil {
-				continue
-			}
-			fk := *nodes[i].user_id
+			fk := nodes[i].UserID
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -452,10 +441,7 @@ func (rq *ReadQuery) sqlAll(ctx context.Context) ([]*Read, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Read)
 		for i := range nodes {
-			if nodes[i].sentence_id == nil {
-				continue
-			}
-			fk := *nodes[i].sentence_id
+			fk := nodes[i].SentenceID
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}

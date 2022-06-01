@@ -383,7 +383,6 @@ func (sq *SentenseQuery) sqlAll(ctx context.Context) ([]*Sentense, error) {
 			nodeids[nodes[i].ID] = nodes[i]
 			nodes[i].Edges.Reads = []*Read{}
 		}
-		query.withFKs = true
 		query.Where(predicate.Read(func(s *sql.Selector) {
 			s.Where(sql.InValues(sentense.ReadsColumn, fks...))
 		}))
@@ -392,13 +391,10 @@ func (sq *SentenseQuery) sqlAll(ctx context.Context) ([]*Sentense, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.sentence_id
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "sentence_id" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			fk := n.SentenceID
+			node, ok := nodeids[fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "sentence_id" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "sentence_id" returned %v for node %v`, fk, n.ID)
 			}
 			node.Edges.Reads = append(node.Edges.Reads, n)
 		}

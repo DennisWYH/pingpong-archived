@@ -17,13 +17,15 @@ type Read struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID int `json:"user_id,omitempty"`
+	// SentenceID holds the value of the "sentence_id" field.
+	SentenceID int `json:"sentence_id,omitempty"`
 	// Result holds the value of the "result" field.
 	Result int `json:"result,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ReadQuery when eager-loading is set.
-	Edges       ReadEdges `json:"edges"`
-	sentence_id *int
-	user_id     *int
+	Edges ReadEdges `json:"edges"`
 }
 
 // ReadEdges holds the relations/edges for other nodes in the graph.
@@ -70,11 +72,7 @@ func (*Read) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case read.FieldID, read.FieldResult:
-			values[i] = new(sql.NullInt64)
-		case read.ForeignKeys[0]: // sentence_id
-			values[i] = new(sql.NullInt64)
-		case read.ForeignKeys[1]: // user_id
+		case read.FieldID, read.FieldUserID, read.FieldSentenceID, read.FieldResult:
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Read", columns[i])
@@ -97,25 +95,23 @@ func (r *Read) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			r.ID = int(value.Int64)
+		case read.FieldUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value.Valid {
+				r.UserID = int(value.Int64)
+			}
+		case read.FieldSentenceID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field sentence_id", values[i])
+			} else if value.Valid {
+				r.SentenceID = int(value.Int64)
+			}
 		case read.FieldResult:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field result", values[i])
 			} else if value.Valid {
 				r.Result = int(value.Int64)
-			}
-		case read.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field sentence_id", value)
-			} else if value.Valid {
-				r.sentence_id = new(int)
-				*r.sentence_id = int(value.Int64)
-			}
-		case read.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_id", value)
-			} else if value.Valid {
-				r.user_id = new(int)
-				*r.user_id = int(value.Int64)
 			}
 		}
 	}
@@ -155,6 +151,10 @@ func (r *Read) String() string {
 	var builder strings.Builder
 	builder.WriteString("Read(")
 	builder.WriteString(fmt.Sprintf("id=%v", r.ID))
+	builder.WriteString(", user_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.UserID))
+	builder.WriteString(", sentence_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.SentenceID))
 	builder.WriteString(", result=")
 	builder.WriteString(fmt.Sprintf("%v", r.Result))
 	builder.WriteByte(')')

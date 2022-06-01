@@ -7,6 +7,10 @@ const (
 	Label = "read"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldSentenceID holds the string denoting the sentence_id field in the database.
+	FieldSentenceID = "sentence_id"
 	// FieldResult holds the string denoting the result field in the database.
 	FieldResult = "result"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -34,25 +38,15 @@ const (
 // Columns holds all SQL columns for read fields.
 var Columns = []string{
 	FieldID,
+	FieldUserID,
+	FieldSentenceID,
 	FieldResult,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "reads"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"sentence_id",
-	"user_id",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

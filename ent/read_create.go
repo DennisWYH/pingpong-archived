@@ -21,27 +21,27 @@ type ReadCreate struct {
 	hooks    []Hook
 }
 
+// SetUserID sets the "user_id" field.
+func (rc *ReadCreate) SetUserID(i int) *ReadCreate {
+	rc.mutation.SetUserID(i)
+	return rc
+}
+
+// SetSentenceID sets the "sentence_id" field.
+func (rc *ReadCreate) SetSentenceID(i int) *ReadCreate {
+	rc.mutation.SetSentenceID(i)
+	return rc
+}
+
 // SetResult sets the "result" field.
 func (rc *ReadCreate) SetResult(i int) *ReadCreate {
 	rc.mutation.SetResult(i)
 	return rc
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (rc *ReadCreate) SetUserID(id int) *ReadCreate {
-	rc.mutation.SetUserID(id)
-	return rc
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (rc *ReadCreate) SetUser(u *User) *ReadCreate {
 	return rc.SetUserID(u.ID)
-}
-
-// SetSentenceID sets the "sentence" edge to the Sentense entity by ID.
-func (rc *ReadCreate) SetSentenceID(id int) *ReadCreate {
-	rc.mutation.SetSentenceID(id)
-	return rc
 }
 
 // SetSentence sets the "sentence" edge to the Sentense entity.
@@ -119,6 +119,12 @@ func (rc *ReadCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (rc *ReadCreate) check() error {
+	if _, ok := rc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Read.user_id"`)}
+	}
+	if _, ok := rc.mutation.SentenceID(); !ok {
+		return &ValidationError{Name: "sentence_id", err: errors.New(`ent: missing required field "Read.sentence_id"`)}
+	}
 	if _, ok := rc.mutation.Result(); !ok {
 		return &ValidationError{Name: "result", err: errors.New(`ent: missing required field "Read.result"`)}
 	}
@@ -180,7 +186,7 @@ func (rc *ReadCreate) createSpec() (*Read, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_id = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := rc.mutation.SentenceIDs(); len(nodes) > 0 {
@@ -200,7 +206,7 @@ func (rc *ReadCreate) createSpec() (*Read, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.sentence_id = &nodes[0]
+		_node.SentenceID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
